@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres-cli
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: cli_usuarios
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cli-usuarios
+    depends_on:
+      - postgres
+    stdin_open: true
+    tty: true
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: cli_usuarios
+      DB_USER: postgres
+      DB_PASSWORD: 123456
+
+volumes:
+  postgres_data:
